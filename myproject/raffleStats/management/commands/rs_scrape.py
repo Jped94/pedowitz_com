@@ -31,7 +31,7 @@ class Command(BaseCommand):
                              password=rs_config.c_password)
 
         subreddit = reddit.subreddit('watchuraffle')
-        newest = subreddit.new(limit=50)
+        newest = subreddit.new(limit=1000)
 
         # ITERATE THROUGH POSTS
         #
@@ -160,7 +160,6 @@ class Command(BaseCommand):
             result = re.search(winner_regex_c, reply.body)
             if result:
                 winComment = reply
-                pprint.pprint(vars(reply))
                 break;
 
         if not winComment:
