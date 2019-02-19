@@ -1,0 +1,5 @@
+c_client_id = 'reddit_client_id'
+c_client_secret = 'reddit_client_secret'
+c_user_agent = 'user_agent'
+c_username = 'username'
+c_password = 'password'

@@ -1,0 +1,6 @@
+c_ENGINE = 'django.db.backends.mysql'
+c_NAME = 'db_name'
+c_USER = 'user'
+c_PASSWORD = 'pass'
+c_HOST = '127.0.0.1'
+c_PORT = '0000'

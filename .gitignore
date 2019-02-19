@@ -120,3 +120,9 @@ apache2/
 
 #bin
 bin/
+
+#config
+rs_config.py
+db_config.py
+
+error_log.txt
