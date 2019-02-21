@@ -126,3 +126,4 @@ rs_config.py
 db_config.py
 
 error_log.txt
+status_log.txt

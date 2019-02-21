@@ -18,6 +18,7 @@ class Command(BaseCommand):
 
     def scrape_wur(self):
 
+        self.write_to_status_log("Starting scrape ")
 
         #GRAB DATA FROM REDDIT
         #
@@ -31,12 +32,14 @@ class Command(BaseCommand):
                              password=rs_config.c_password)
 
         subreddit = reddit.subreddit('watchuraffle')
-        newest = subreddit.new(limit=1000)
+        newest = subreddit.new(limit=50)
 
         # ITERATE THROUGH POSTS
         #
         #
         #
+
+        num_records_added = 0
 
         for post in newest:
             if (post.link_flair_text == "Complete"):
@@ -68,7 +71,7 @@ class Command(BaseCommand):
                 if vwinning_spot == -1:
                     continue
                 else:
-                    spot_results = self.build_histogram(post.selftext, vwinning_spot)
+                    spot_results = self.build_histogram(post.selftext, vwinning_spot, post)
                     if spot_results["winner_num_spots"] == None:
                         continue
                     else:
@@ -99,10 +102,12 @@ class Command(BaseCommand):
                                         duration_hours = vduration_hours, \
                                         tier = vtier)
                     newRaffle.save()
+                    num_records_added += 1
                     self.insert_spot_count(vspot_histogram, newRaffle)
                 #pprint.pprint(vars(post))
+        self.write_to_status_log("Ending scrape. Added " + str(num_records_added) + " records.")
 
-    def build_histogram(self, description, win_number):
+    def build_histogram(self, description, win_number, post):
         win_user = None
         spot_counts_by_user = {}
         spot_counts = {}
@@ -225,8 +230,13 @@ class Command(BaseCommand):
             spot_entry.save()
 
     def write_to_log(self, error_message, post):
-        log_file = open("error_log.txt", "w")
+        log_file = open("error_log.txt", "a+")
         log_file.write("Title: " + post.title + ", " + error_message + "\n")
+        log_file.close()
+
+    def write_to_status_log(self, message):
+        log_file = open("status_log.txt", "a+")
+        log_file.write(message + datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "\n")
         log_file.close()
 
 
