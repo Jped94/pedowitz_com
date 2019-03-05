@@ -56,7 +56,7 @@ ROOT_URLCONF = 'myproject.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, "myproject/templates"), ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -75,23 +75,23 @@ WSGI_APPLICATION = 'myproject.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}
-
 #DATABASES = {
 #    'default': {
-#        'ENGINE': db_config.c_ENGINE,
-#        'NAME': db_config.c_NAME,
-#        'USER': db_config.c_USER,
-#        'PASSWORD': db_config.c_PASSWORD,
-#        'HOST': db_config.c_HOST,   # Or an IP Address that your DB is hosted on
-#        'PORT': db_config.c_PORT,
+#        'ENGINE': 'django.db.backends.sqlite3',
+#        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
 #    }
 #}
+
+DATABASES = {
+    'default': {
+        'ENGINE': db_config.c_ENGINE,
+        'NAME': db_config.c_NAME,
+        'USER': db_config.c_USER,
+        'PASSWORD': db_config.c_PASSWORD,
+        'HOST': db_config.c_HOST,   # Or an IP Address that your DB is hosted on
+        'PORT': db_config.c_PORT,
+    }
+}
 
 
 

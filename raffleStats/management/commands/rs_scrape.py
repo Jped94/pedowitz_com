@@ -44,6 +44,8 @@ class Command(BaseCommand):
         for post in newest:
             if (post.link_flair_text == "Complete"):
 
+                pprint.pprint(vars(post))
+
                 #initialize variables
                 vpost_id = None
                 vtitle = None
@@ -55,12 +57,14 @@ class Command(BaseCommand):
                 vdatetime_completed = None
                 vduration_hours = None
                 vtier = None
+                vurl = None
 
                 vspot_histogram = None
 
                 vpost_id = post.id
                 vtier = self.get_raffle_tier(post)
                 vtitle = post.title
+                vurl = post.url
                 vprice_per_spot = -1 #unknown how to do this yet
 
                 win_comment = self.get_win_comment(post)
@@ -100,7 +104,8 @@ class Command(BaseCommand):
                                         datetime_posted = vdatetime_posted, \
                                         datetime_completed = vdatetime_completed, \
                                         duration_hours = vduration_hours, \
-                                        tier = vtier)
+                                        tier = vtier,\
+                                        url = vurl)
                     newRaffle.save()
                     num_records_added += 1
                     self.insert_spot_count(vspot_histogram, newRaffle)
