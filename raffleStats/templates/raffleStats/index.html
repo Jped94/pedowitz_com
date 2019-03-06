@@ -20,11 +20,7 @@
         {% for raffle in raffles %}
         <tr>
 
-          <td>
-            <a href="{{ raffle.url }}">
-              {{raffle.title}}
-            </a>
-          </td>
+          <td>{{raffle.title}}</td>
           <td>{{raffle.num_spots}}</td>
           <td>{{raffle.winning_spot}}</td>
           <td>{{raffle.num_spots_for_winner}}</td>
