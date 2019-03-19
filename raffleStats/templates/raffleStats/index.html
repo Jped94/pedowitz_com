@@ -2,6 +2,10 @@
 {% load staticfiles %}
 {% block content %}
 <html>
+  <head>
+    <title>Raffle Stats</title>
+    <link rel="stylesheet" href="{% static 'css/history_style.css' %}">
+  </head>
   <body style ="padding-top: 70px">
     <h1>Raffle History</h1>
     {% if raffles %}
@@ -20,7 +24,10 @@
         {% for raffle in raffles %}
         <tr>
 
-          <td>{{raffle.title}}</td>
+          <td>
+            <a href="{%url 'details' vpost_id=raffle.post_id %}">
+              {{raffle.title}}
+          </td>
           <td>{{raffle.num_spots}}</td>
           <td>{{raffle.winning_spot}}</td>
           <td>{{raffle.num_spots_for_winner}}</td>
