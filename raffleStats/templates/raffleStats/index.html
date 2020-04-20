@@ -1,10 +1,10 @@
 {% extends "myproject/base.html" %}
-{% load staticfiles %}
+{% load static %}
 {% block content %}
 <html>
   <head>
     <title>Raffle Stats</title>
-    <link rel="stylesheet" href="{% static 'css/history_style.css' %}">
+    <link rel="stylesheet" href="{% static 'raffleStats/css/history_style.css' %}">
   </head>
   <body style ="padding-top: 70px">
     <h1>Raffle History</h1>
@@ -53,9 +53,9 @@
   </body>
 </html>
 
-<script src="{% static "js/jquery-3.4.1.min.js" %}"></script>
-<script src="{% static "js/jquery.waypoints.min.js" %}"></script>
-<script src="{% static "js/infinite.min.js" %}"></script>
+<script src="{% static 'raffleStats/js/jquery-3.4.1.min.js' %}"></script>
+<script src="{% static 'raffleStats/js/jquery.waypoints.min.js' %}"></script>
+<script src="{% static 'raffleStats/js/infinite.min.js' %}"></script>
 <script>
   var infinite = new Waypoint.Infinite({
       element: $('.infinite-container')[0],
