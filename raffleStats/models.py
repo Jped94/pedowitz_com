@@ -11,6 +11,7 @@ class Raffle(models.Model):
     datetime_completed = models.DateTimeField()
     duration_hours = models.DecimalField(max_digits=4, decimal_places=2)
     tier = models.IntegerField()
+    url = models.TextField(default=None, blank=True, null=True)
 
 class SpotCount(models.Model):
     post_id = models.ForeignKey(Raffle, on_delete=models.CASCADE)
