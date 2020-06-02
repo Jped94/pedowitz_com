@@ -1,0 +1,65 @@
+{% extends "myproject/base.html" %}
+{% load static %}
+{% block content %}
+<html>
+  <head>
+    <title>Raffle Stats</title>
+    <link rel="stylesheet" href="{% static 'raffleStats/css/history_style.css' %}">
+  </head>
+  <body style ="padding-top: 70px">
+    <h1>Raffle History</h1>
+
+    {% if raffles %}
+      <div class="wrapper">
+        <table class="table infinite-container">
+          <tr>
+            <th>Title</th>
+            <th>Number of Spots</th>
+            <th>Winning Spot</th>
+            <th>Num Spots Purchased by Winner</th>
+            <th>Tier</th>
+            <th>Posted (UTC)</th>
+            <th>Completed (UTC)</th>
+            <th>Duration (hr)</th>
+          </tr>
+          {% for raffle in raffles %}
+          <tr class="infinite-item">
+            <td>
+              <a href="{%url 'details' vpost_id=raffle.post_id %}">
+                {{raffle.title}}
+            </td>
+            <td>{{raffle.num_spots}}</td>
+            <td>{{raffle.winning_spot}}</td>
+            <td>{{raffle.num_spots_for_winner}}</td>
+            {% if raffle.tier == 0 %}
+              <td>NM</td>
+            {% elif raffle.tier == 1 %}
+              <td>Blue NM</td>
+            {% else %}
+              <td>MAIN</td>
+            {% endif %}
+            <td>{{raffle.datetime_posted}}</td>
+            <td>{{raffle.datetime_completed}}</td>
+            <td>{{raffle.duration_hours}}</td>
+          </tr>
+          {% endfor %}
+        </table>
+        {% if raffles.has_next %}
+        <a class="infinite-more-link" href="?page={{ raffles.next_page_number }}"></a>
+        {% endif %}
+      </div>
+    {% else %}
+      <p>There are currently no raffles to view</p>
+    {% endif %}
+  </body>
+</html>
+
+<script src="{% static 'raffleStats/js/jquery-3.4.1.min.js' %}"></script>
+<script src="{% static 'raffleStats/js/jquery.waypoints.min.js' %}"></script>
+<script src="{% static 'raffleStats/js/infinite.min.js' %}"></script>
+<script>
+  var infinite = new Waypoint.Infinite({
+      element: $('.infinite-container')[0],
+  });
+</script>
+{% endblock %}

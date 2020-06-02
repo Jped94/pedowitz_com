@@ -1,5 +1,6 @@
 {% extends "myproject/base.html" %}
 {% load static %}
+{% load raffleStats_extras %}
 {% block content %}
 <html>
   <head>
@@ -7,58 +8,60 @@
     <link rel="stylesheet" href="{% static 'raffleStats/css/history_style.css' %}">
   </head>
   <body style ="padding-top: 70px">
-    <h1>Raffle History</h1>
+    <h1>Raffle Stats</h1>
+
+
+    <h3> Latest Winning Numbers</h3>
+      {% for i in 5|value_range %}
+        <p>{% with raffle_result=raffles|index:i %}{{raffle_result.winning_spot}}{% endwith %}</p>
+      {% endfor %}
+
+
+    <h3><a href="/raffleStats/history">View the Full Raffle History</a></h3>
+
+
+    <h3>Download the Dataset</h3>
     {% if raffles %}
-      <div class="wrapper">
-        <table class="table infinite-container">
-          <tr>
-            <th>Title</th>
-            <th>Number of Spots</th>
-            <th>Winning Spot</th>
-            <th>Num Spots Purchased by Winner</th>
-            <th>Tier</th>
-            <th>Posted (UTC)</th>
-            <th>Completed (UTC)</th>
-            <th>Duration (hr)</th>
-          </tr>
-          {% for raffle in raffles %}
-          <tr class="infinite-item">
-            <td>
-              <a href="{%url 'details' vpost_id=raffle.post_id %}">
-                {{raffle.title}}
-            </td>
-            <td>{{raffle.num_spots}}</td>
-            <td>{{raffle.winning_spot}}</td>
-            <td>{{raffle.num_spots_for_winner}}</td>
-            {% if raffle.tier == 0 %}
-              <td>NM</td>
-            {% elif raffle.tier == 1 %}
-              <td>Blue NM</td>
-            {% else %}
-              <td>MAIN</td>
-            {% endif %}
-            <td>{{raffle.datetime_posted}}</td>
-            <td>{{raffle.datetime_completed}}</td>
-            <td>{{raffle.duration_hours}}</td>
-          </tr>
-          {% endfor %}
-        </table>
-        {% if raffles.has_next %}
-        <a class="infinite-more-link" href="?page={{ raffles.next_page_number }}"></a>
-        {% endif %}
-      </div>
+      <form action="." method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Download Dataset">
+      </form>
+      {% if form.errors %}
+        {% for field in form %}
+            {% for error in field.errors %}
+                <div class="alert alert-danger">
+                    <strong>{{ error|escape }}</strong>
+                </div>
+            {% endfor %}
+        {% endfor %}
+        {% for error in form.non_field_errors %}
+            <div class="alert alert-danger">
+                <strong>{{ error|escape }}</strong>
+            </div>
+        {% endfor %}
+      {% endif %}
     {% else %}
       <p>There are currently no raffles to view</p>
     {% endif %}
+
+
+    <h3> About Raffle Stats</h3>
+      <p>Raffle Stats is a project I started in 2019 to visualize and analyze
+      data from an online watch gambling forum. The watches are sold on this forum through raffles.
+      A user puts their watch up for raffle by determining, often with the help
+      of the community, a price for their watch and the number of raffle tickets (spots)
+      that they are selling. These spots will be numbered 1-n where n is the number of
+      spots being sold. Users can ask for specific spot numbers or have them assigned at
+      random. Once all spots are sold, a random number generator will generate a number,
+      determining the winner.<p>
+      <p>Every 15 minutes, my scraper runs through the forum and updates my database of completed
+      raffles. For each raffle, I save the title, number of spots, price per spot, winning spot
+      number, number of spots purchased by winner, timing information, and a histogram of
+      number of spots purchased vs. number of users. Absolutely no identifying information
+      about participating users is stored.</p>
+      <p>if you would like to check out the data set, check out the download button in
+      the top right of the webpage!<p>
   </body>
 </html>
-
-<script src="{% static 'raffleStats/js/jquery-3.4.1.min.js' %}"></script>
-<script src="{% static 'raffleStats/js/jquery.waypoints.min.js' %}"></script>
-<script src="{% static 'raffleStats/js/infinite.min.js' %}"></script>
-<script>
-  var infinite = new Waypoint.Infinite({
-      element: $('.infinite-container')[0],
-  });
-</script>
 {% endblock %}
