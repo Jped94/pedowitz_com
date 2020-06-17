@@ -19,6 +19,7 @@ from . import views
 
 urlpatterns = [
     path('', views.homeindex, name='homeindex'),
+    path('about', views.about_me, name="about_me"),
     path('raffleStats/', include('raffleStats.urls')),
     path('admin/', admin.site.urls),
 ]
