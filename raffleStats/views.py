@@ -69,7 +69,18 @@ def spotcounts(request, vpost_id):
         data.append(entry)
     return JsonResponse(data, safe=False)
 
-def dataset(request, vfrom_date, vto_date):
+def dataset_full(request):
+    raffle_class = Raffle
+    meta = raffle_class._meta
+    field_names = [field.name for field in meta.fields]
+    del field_names[-1] #remove URLs
+    field_names.append('spot_histogram')
+
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename=RaffleStats_dataset.csv'
+    writer = csv.writer(response)
+
+def dataset(request, vfrom_date = None, vto_date = None):
 
     raffle_class = Raffle
     meta = raffle_class._meta
@@ -81,14 +92,22 @@ def dataset(request, vfrom_date, vto_date):
     response['Content-Disposition'] = 'attachment; filename=RaffleStats_dataset.csv'
     writer = csv.writer(response)
 
-    from_date = datetime.datetime.strptime(vfrom_date, '%d/%m/%Y')
-    to_date = datetime.datetime.strptime(vto_date, '%d/%m/%Y')
+
 
     writer.writerow(field_names)
     del field_names[-1] #remove the spot histogram name again since its not in the raffle object
-    for raffle in raffle_class.objects.filter(datetime_posted__range=[from_date, to_date]):
-        row = [getattr(raffle, field) for field in field_names]
-        row.append(raffle.get_spot_count_histogram())
-        writer.writerow(row)
+
+    if (vfrom_date != None and vto_date != None):
+        from_date = datetime.datetime.strptime(vfrom_date, '%d/%m/%Y')
+        to_date = datetime.datetime.strptime(vto_date, '%d/%m/%Y')
+        for raffle in raffle_class.objects.filter(datetime_posted__range=[from_date, to_date]):
+            row = [getattr(raffle, field) for field in field_names]
+            row.append(raffle.get_spot_count_histogram())
+            writer.writerow(row)
+    else:
+        for raffle in raffle_class.objects.order_by('-datetime_completed'):
+            row = [getattr(raffle, field) for field in field_names]
+            row.append(raffle.get_spot_count_histogram())
+            writer.writerow(row)
 
     return response

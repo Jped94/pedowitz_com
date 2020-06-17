@@ -5,7 +5,7 @@
 <html>
   <head>
     <title>Details</title>
-    <link rel="stylesheet" href="{% static 'css/history_style.css' %}">
+    <link rel="stylesheet" href="{% static 'raffleStats/css/history_style.css' %}">
   </head>
   <body style ="padding-top: 70px">
     <h1>Spot Count Histogram</h1>
@@ -106,10 +106,6 @@
       .data(data)
     .enter().append("rect")
       .attr("class", "bar")
-      .attr("x", function(d) { return x(d.num_spots); })
-      .attr("y", function(d) { return y(d.num_users); })
-      .attr("height", function(d) { return height - y(d.num_users); })
-      .attr("width", x.rangeBand())
       .style("fill", function(d)
       {
         if (d.num_spots == num_spots_winner)
@@ -120,7 +116,15 @@
         {
           return "1d88cf";
         }
-      });
+      })
+      .attr("x", function(d) { return x(d.num_spots); })
+      .attr("y", height)
+      .attr("width", x.rangeBand())
+      .attr("height", 0)
+      .transition()
+      .duration(1000)
+      .attr("y", function(d) { return y(d.num_users); })
+      .attr("height", function(d) { return height - y(d.num_users); });
   });
 
   </script>

@@ -2,6 +2,15 @@
 {% load static %}
 {% load raffleStats_extras %}
 {% block content %}
+
+<style>
+
+hr{
+    border-top: 3px double #8c8b8b
+}
+
+</style>
+
 <html>
   <head>
     <title>Raffle Stats</title>
@@ -10,41 +19,80 @@
   <body style ="padding-top: 70px">
     <h1>Raffle Stats</h1>
 
+    <h3> Latest Completed Raffles</h3>
 
-    <h3> Latest Winning Numbers</h3>
+    <table class="table infinite-container">
+      <tr>
+        <th>Title</th>
+        <th>Number of Spots</th>
+        <th>Winning Spot</th>
+        <th>Num Spots Purchased by Winner</th>
+        <th>Tier</th>
+        <th>Posted (UTC)</th>
+        <th>Completed (UTC)</th>
+        <th>Duration (hr)</th>
+      </tr>
       {% for i in 5|value_range %}
-        <p>{% with raffle_result=raffles|index:i %}{{raffle_result.winning_spot}}{% endwith %}</p>
+        {% with raffle=raffles|index:i %}
+      <tr class="infinite-item">
+        <td>
+          <a href="{%url 'details' vpost_id=raffle.post_id %}">
+            {{raffle.title}}
+        </td>
+        <td>{{raffle.num_spots}}</td>
+        <td>{{raffle.winning_spot}}</td>
+        <td>{{raffle.num_spots_for_winner}}</td>
+        {% if raffle.tier == 0 %}
+          <td>NM</td>
+        {% elif raffle.tier == 1 %}
+          <td>Blue NM</td>
+        {% else %}
+          <td>MAIN</td>
+        {% endif %}
+        <td>{{raffle.datetime_posted}}</td>
+        <td>{{raffle.datetime_completed}}</td>
+        <td>{{raffle.duration_hours}}</td>
+      </tr>
+      {% endwith %}
       {% endfor %}
+    </table>
 
+    <div class="text-center">
+      <h3><a href="/raffleStats/history">View the Full Raffle History</a></h3>
+    </div>
 
-    <h3><a href="/raffleStats/history">View the Full Raffle History</a></h3>
+    <hr>
 
+    <div class="container">
+      <div class="d-inline-block" style="float:left">
+        <h2>Download a Piece of the Dataset</h2>
+        <form action="." method="post">
+          {% csrf_token %}
+          {{ form.as_p }}
+          <input class="btn btn-primary" type="submit" value="Download">
+        </form>
+        {% if form.errors %}
+          {% for field in form %}
+              {% for error in field.errors %}
+                  <div class="alert alert-danger">
+                      <strong>{{ error|escape }}</strong>
+                  </div>
+              {% endfor %}
+          {% endfor %}
+          {% for error in form.non_field_errors %}
+              <div class="alert alert-danger">
+                  <strong>{{ error|escape }}</strong>
+              </div>
+          {% endfor %}
+        {% endif %}
+      </div>
+      <div class="d-inline-block" style="float:right">
+        <h2>Download the Full Dataset</h2>
+        <input class="btn btn-primary" type="button" value="Download" onclick="location.href='{% url 'dataset' %}'"  />
+      </div>
+    </div>
 
-    <h3>Download the Dataset</h3>
-    {% if raffles %}
-      <form action="." method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit" value="Download Dataset">
-      </form>
-      {% if form.errors %}
-        {% for field in form %}
-            {% for error in field.errors %}
-                <div class="alert alert-danger">
-                    <strong>{{ error|escape }}</strong>
-                </div>
-            {% endfor %}
-        {% endfor %}
-        {% for error in form.non_field_errors %}
-            <div class="alert alert-danger">
-                <strong>{{ error|escape }}</strong>
-            </div>
-        {% endfor %}
-      {% endif %}
-    {% else %}
-      <p>There are currently no raffles to view</p>
-    {% endif %}
-
+    <hr>
 
     <h3> About Raffle Stats</h3>
       <p>Raffle Stats is a project I started in 2019 to visualize and analyze
@@ -60,8 +108,7 @@
       number, number of spots purchased by winner, timing information, and a histogram of
       number of spots purchased vs. number of users. Absolutely no identifying information
       about participating users is stored.</p>
-      <p>if you would like to check out the data set, check out the download button in
-      the top right of the webpage!<p>
+      <p>if you would like to check out the data set, check out the download button above!<p>
   </body>
 </html>
 {% endblock %}
