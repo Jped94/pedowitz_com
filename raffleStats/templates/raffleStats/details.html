@@ -5,7 +5,7 @@
 <html>
   <head>
     <title>Details</title>
-    <link rel="stylesheet" href="{% static 'css/history_style.css' %}">
+    <link rel="stylesheet" href="{% static 'raffleStats/css/history_style.css' %}">
   </head>
   <body style ="padding-top: 70px">
     <h1>Spot Count Histogram</h1>
@@ -45,7 +45,10 @@
 
   <script>
 
-  var margin  = {left:30, right:80, top:30, bottom:50}
+  var winning_spot = "{{raffle.winning_spot}}";
+  var num_spots_winner = "{{raffle.num_spots_for_winner}}";
+
+  var margin  = {left:50, right:80, top:30, bottom:50}
     width = 600 - margin.left - margin.right,
     height = 500 - margin.top - margin.bottom;
 
@@ -75,38 +78,53 @@
 
     var barWidth = width/data.length;
 
-    /*var bar = chart.selectAll("g")
-        .data(data)
-      .enter().append("g")
-        .attr("transform", function(d, i) { return "translate(" + i * barWidth + ",0)"; });// )" "translate(0," + i * barWidth + ")"; });
-
-    bar.append("rect")
-        .attr("y", function(d) { return y(d.num_users) ; })
-        .attr("height", function(d) { return height - y(d.num_users); })
-        .attr("width", barWidth - 1);
-
-    bar.append("text")
-        .attr("x", barWidth / 2)
-        .attr("y", function(d) { return y(d.num_users) + 3; })
-        .attr("dy", ".75em")
-        .text(function(d) { return d.num_users; });*/
     chart.append("g")
       .attr("class", "x axis")
       .attr("transform", "translate(0," + height + ")")
-      .call(xAxis);
+      .call(xAxis)
+      .append("text")
+        .attr("y", 30)
+        .attr("x", width/2)
+        .attr("text-anchor", "middle")
+        .attr("stroke", "black")
+        .style("font-size", "12px")
+        .text("Number of Raffle Spots Purchased");
 
     chart.append("g")
       .attr("class", "y axis")
-      .call(yAxis);
+      .call(yAxis)
+      .append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", -30)
+        .attr("x", -height/2)
+        .attr("text-anchor", "middle")
+        .attr("stroke", "black")
+        .style("font-size", "12px")
+        .text("Number of Users");
 
     chart.selectAll(".bar")
       .data(data)
     .enter().append("rect")
       .attr("class", "bar")
+      .style("fill", function(d)
+      {
+        if (d.num_spots == num_spots_winner)
+        {
+          return "36d96f";
+        }
+        else
+        {
+          return "1d88cf";
+        }
+      })
       .attr("x", function(d) { return x(d.num_spots); })
+      .attr("y", height)
+      .attr("width", x.rangeBand())
+      .attr("height", 0)
+      .transition()
+      .duration(1000)
       .attr("y", function(d) { return y(d.num_users); })
-      .attr("height", function(d) { return height - y(d.num_users); })
-      .attr("width", x.rangeBand());
+      .attr("height", function(d) { return height - y(d.num_users); });
   });
 
   </script>

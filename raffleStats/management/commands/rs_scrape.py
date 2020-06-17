@@ -205,7 +205,7 @@ class Command(BaseCommand):
         title = post.title
         title_tag_regex = r"\[(.+)\]"
         nm_regex_c = re.compile(r"NM", re.IGNORECASE)
-        blue_nm_regex_c = re.compile(r"Blue NM", re.IGNORECASE)
+        blue_nm_regex_c = re.compile(r"Blue", re.IGNORECASE)
 
         tag = re.search(title_tag_regex, post.title)
 
@@ -218,10 +218,12 @@ class Command(BaseCommand):
         else:
             tag = tag.group(1)
 
+            #match must find the regex at the beginning
             if re.match(nm_regex_c, tag):
                 print("NM")
                 return 0 #NM
-            elif re.match(blue_nm_regex_c, tag):
+            #search for blue so we can have "Blue NM" or "Blue"
+            elif re.search(blue_nm_regex_c, tag):
                 print("Blue")
                 return 1 #Blue NM
             else:

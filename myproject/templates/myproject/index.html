@@ -2,9 +2,19 @@
 {% load staticfiles %}
 {% block content %}
 <html>
+
 <link rel="stylesheet" href="{% static 'css/home_index_style.css' %}">
   <body>
-    <h1>This website is under construction!</h1>
+    <div class="text-center">
+      <h1 style="font-size:60px">Josh Pedowitz</h1>
+      <p style="color:grey">
+        MBA + MS in Design Innovation Candidate (MMM Program) at Northwestern Kellogg<br/>
+        Former Software Engineer
+      </p>
+      <img class="rounded" src="{% static 'images/Val_josh_gb_photo.jpeg' %}" width="500" height="500"/>
+    </div>
   </body>
+
+
 </html>
 {% endblock %}

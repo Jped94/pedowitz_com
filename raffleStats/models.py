@@ -13,6 +13,14 @@ class Raffle(models.Model):
     tier = models.IntegerField()
     url = models.TextField(default=None, blank=True, null=True)
 
+    def get_spot_count_histogram(self):
+        hist = ""
+        for obj in SpotCount.objects.filter(post_id=self.post_id).order_by('num_spots'):
+            hist += str(obj.num_spots) + ":" + str(obj.count) + ";"
+
+        return hist
+
+
 class SpotCount(models.Model):
     post_id = models.ForeignKey(Raffle, on_delete=models.CASCADE)
     num_spots = models.IntegerField()
